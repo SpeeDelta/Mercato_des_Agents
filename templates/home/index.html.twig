@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bienvenue Agent{% endblock %}
+
+{% block body %}
+    <div class="container">
+
+        <header class="header">
+            <h1 class="title">⚽ MERCATO DES AGENTS</h1>
+            <p class="subtitle">Football • Mode • Recrutement</p>
+        </header>
+
+        <div class="card">
+            <label for="agentName">Ton nom d’Agent :</label>
+            <input type="text" id="agentName" placeholder="Ex : Mendes, Raiola, Campos">
+
+            <button id="confirmName" class="btn-primary"
+                    onclick="window.location.href='/mission?name=' + document.getElementById('agentName').value;">
+                Confirmer
+            </button>
+        </div>
+
+        <button class="btn-secondary" onclick="window.location.href='/arbitre'">
+            Mode Arbitre
+        </button>
+
+    </div>
+
+    <style>
+        body { background: #0b0f19; color: white; font-family: 'Montserrat'; padding: 20px; }
+        .title { text-align: center; font-size: 2rem; margin-bottom: 0; }
+        .subtitle { text-align: center; opacity: 0.7; margin-bottom: 30px; }
+        .card { background: #111827; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; border-radius: 8px; border: none; margin-top: 10px; }
+        .btn-primary { background: #2563eb; padding: 12px; border-radius: 8px; width: 100%; border: none; margin-top: 15px; }
+        .btn-secondary { background: #374151; padding: 10px; border-radius: 8px; width: 100%; border: none; margin-top: 10px; }
+    </style>
+
+{% endblock %}
