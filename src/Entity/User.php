@@ -9,27 +9,20 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: '`user`')]
 class User
 {
+    // Use `subId` as the primary key (string) to match the database schema
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\Column(length: 255)]
     private ?string $subId = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $pseudo = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: 'integer')]
     private ?int $score = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: 'boolean')]
     private ?bool $isActive = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getSubId(): ?string
     {

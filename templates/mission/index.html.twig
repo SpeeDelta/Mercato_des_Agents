@@ -1,0 +1,259 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #003d99 0%, #0066ff 50%, #004db8 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .home-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.98) 100%);
+            border-radius: 24px;
+            padding: 2.5rem;
+            max-width: 720px;
+            margin: 3rem auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .card-title {
+            background: linear-gradient(135deg, #003d99 0%, #0066ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary-ghost {
+            background: linear-gradient(135deg, #003d99 0%, #0066ff 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            font-weight: 700;
+            border: none;
+        }
+
+        .btn-primary-ghost:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+        }
+
+        .criteria-list li { margin-bottom: .6rem; }
+        .muted { color: #6b7280; }
+
+        .top-right-nav {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+        }
+
+        .btn-top-nav {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 12px;
+            padding: .55rem .9rem;
+            font-weight: 700;
+            text-decoration: none;
+            backdrop-filter: blur(6px);
+        }
+
+        .btn-top-nav:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-backdrop-custom {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.72);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1050;
+            padding: 1rem;
+        }
+
+        .modal-card {
+            width: 100%;
+            max-width: 520px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+            padding: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 1rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: .75rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .btn-soft {
+            border-radius: 12px;
+            padding: .7rem 1rem;
+            font-weight: 700;
+            border: none;
+        }
+
+        .btn-cancel {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #003d99 0%, #0066ff 100%);
+            color: white;
+        }
+    </style>
+
+    {% set criteriaDescriptions = criteriaDescriptions|default({}) %}
+
+    <div class="top-right-nav">
+        <a href="{{ path('app_classement') }}" class="btn-top-nav">🏆 Classement</a>
+    </div>
+
+    <div class="container">
+        <div class="home-card">
+            <h2 class="card-title">Generation de mission</h2>
+
+            <p class="muted">Utilisateur connecte : <strong>{{ connectedSubId }}</strong></p>
+
+            <form method="post" class="mb-4" data-turbo="false" id="generateMissionForm">
+                <input type="hidden" name="generate_mission" value="1">
+                <button
+                    type="button"
+                    class="btn btn-primary-ghost"
+                    id="generateMissionBtn"
+                    {% if isArbitre %}disabled{% endif %}
+                >
+                    ⚡ Generer une mission
+                </button>
+            </form>
+
+            {% if isArbitre %}
+                <p class="muted">Un arbitre ne peut pas generer de mission.</p>
+            {% endif %}
+
+            <p class="muted">Chaque nouvelle generation remplace la mission precedente.</p>
+
+            {% if missionId is defined and missionId %}
+                <div class="mb-3">
+                    <h5>Mission generee</h5>
+                </div>
+
+                <div class="mb-3">
+                    <h5>Criteres</h5>
+                    {% if criteria is defined and criteria is not empty %}
+                        <ul class="criteria-list list-unstyled">
+                            {% for c in criteria %}
+                                {% set criterionDescription = criteriaDescriptions[c]|default(c) %}
+                                <li>• {{ criterionDescription }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="muted">Aucun critere trouve.</p>
+                    {% endif %}
+                </div>
+
+            {% else %}
+                <p class="muted">Aucune mission generee pour l'instant.</p>
+            {% endif %}
+
+            <div class="mt-4">
+                <details>
+                    <summary style="cursor:pointer; font-weight:700; color:#003d99;">🏆 Règles du Mercato</summary>
+                    <div class="mt-3 p-3" style="background: rgba(0,61,153,0.06); border-radius: 16px; color:#0f172a;">
+                        <p class="mb-2 fw-bold">🏆 BIENVENUE AU MERCATO ! 🏆</p>
+                        <ol class="mb-0 ps-3">
+                            <li>📱 CLIQUE pour générer ta mission (3 critères de style).</li>
+                            <li>🗣️ CHASSE les profils et retiens leur prénom + ville (Paris/Lyon).</li>
+                            <li>📸 SELFIE avec tes 3 recrues.</li>
+                            <li>🏁 VALIDE auprès d’un arbitre = +1 Point !</li>
+                        </ol>
+                    </div>
+                </details>
+            </div>
+
+            <a href="/" class="muted">← Retour</a>
+        </div>
+    </div>
+
+    <div class="modal-backdrop-custom" id="generateMissionModal" aria-hidden="true">
+        <div class="modal-card">
+            <div class="modal-title">Confirmer la generation</div>
+            <p class="muted mb-3">Voulez-vous generer une nouvelle mission ? La precedente sera supprimee.</p>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-soft btn-cancel" id="cancelGenerateModalBtn">Annuler</button>
+                <button type="button" class="btn-soft btn-confirm" id="confirmGenerateModalBtn">Confirmer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const openBtn = document.getElementById('generateMissionBtn');
+            const modal = document.getElementById('generateMissionModal');
+            const cancelBtn = document.getElementById('cancelGenerateModalBtn');
+            const confirmBtn = document.getElementById('confirmGenerateModalBtn');
+            const form = document.getElementById('generateMissionForm');
+
+            function openModal() {
+                if (!modal) {
+                    return;
+                }
+
+                modal.style.display = 'flex';
+                modal.setAttribute('aria-hidden', 'false');
+            }
+
+            function closeModal() {
+                if (!modal) {
+                    return;
+                }
+
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+            }
+
+            if (openBtn && !openBtn.disabled) {
+                openBtn.addEventListener('click', openModal);
+            }
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', closeModal);
+            }
+
+            if (confirmBtn && form) {
+                confirmBtn.addEventListener('click', function () {
+                    form.submit();
+                });
+            }
+
+            if (modal) {
+                modal.addEventListener('click', function (event) {
+                    if (event.target === modal) {
+                        closeModal();
+                    }
+                });
+            }
+        });
+    </script>
+
+
+{% endblock %}

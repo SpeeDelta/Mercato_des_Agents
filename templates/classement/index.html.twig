@@ -1,0 +1,156 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Classement{% endblock %}
+
+{% block body %}
+    <style>
+        body {
+            background: linear-gradient(135deg, #003d99 0%, #0066ff 50%, #004db8 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .classement-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.98) 100%);
+            border-radius: 24px;
+            padding: 2rem;
+            max-width: 760px;
+            margin: 3rem auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-title {
+            background: linear-gradient(135deg, #003d99 0%, #0066ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .muted {
+            color: #6b7280;
+        }
+
+        .score-badge {
+            background: linear-gradient(135deg, #003d99 0%, #0066ff 100%);
+            color: #fff;
+            border-radius: 999px;
+            font-weight: 700;
+            padding: .35rem .75rem;
+            min-width: 60px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .search-form {
+            display: flex;
+            gap: .75rem;
+            flex-wrap: wrap;
+            margin-top: 1.25rem;
+        }
+
+        .search-input {
+            flex: 1 1 260px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 61, 153, 0.18);
+            padding: .75rem 1rem;
+        }
+
+        .btn-primary-ghost {
+            background: linear-gradient(135deg, #003d99 0%, #0066ff 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            border: none;
+        }
+
+        .btn-secondary-soft {
+            background: #e2e8f0;
+            color: #0f172a;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+    </style>
+
+    <div class="container">
+        <div class="classement-card">
+            <h2 class="card-title">Classement</h2>
+            <p class="muted">Top joueurs selon le score actuel.</p>
+
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success mt-3">{{ message }}</div>
+            {% endfor %}
+            {% for message in app.flashes('danger') %}
+                <div class="alert alert-danger mt-3">{{ message }}</div>
+            {% endfor %}
+
+            {% if isArbitre %}
+                <form method="get" class="search-form" data-turbo="false">
+                    <input
+                        type="text"
+                        name="q"
+                        value="{{ search|default('') }}"
+                        class="search-input"
+                        placeholder="Rechercher par pseudo ou subId"
+                    >
+                    <button type="submit" class="btn-primary-ghost">🔎 Rechercher</button>
+                    {% if search is not empty %}
+                        <a href="{{ path('app_classement') }}" class="btn-secondary-soft">Réinitialiser</a>
+                    {% endif %}
+                </form>
+            {% endif %}
+
+            {% if ranking is not empty %}
+                <div class="table-responsive mt-4">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Pseudo</th>
+                                {% if isArbitre %}
+                                    <th>SubId</th>
+                                {% endif %}
+                                <th class="text-end">Score</th>
+                                {% if isArbitre %}
+                                    <th class="text-end">Action</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for player in ranking %}
+                                <tr>
+                                    <td><strong>{{ loop.index }}</strong></td>
+                                    <td>{{ player.pseudo }}</td>
+                                    {% if isArbitre %}
+                                        <td>{{ player.subId }}</td>
+                                    {% endif %}
+                                    <td class="text-end"><span class="score-badge">{{ player.score }}</span></td>
+                                    {% if isArbitre %}
+                                        <td class="text-end">
+                                            <form method="post" data-turbo="false" class="d-inline">
+                                                <input type="hidden" name="add_point" value="1">
+                                                <input type="hidden" name="subId" value="{{ player.subId }}">
+                                                <input type="hidden" name="q" value="{{ search|default('') }}">
+                                                <button type="submit" class="btn btn-sm btn-primary-ghost">+1 point</button>
+                                            </form>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="muted mt-3">Aucun joueur a afficher pour le moment.</p>
+            {% endif %}
+
+            <a href="/" class="muted">← Retour</a>
+        </div>
+    </div>
+{% endblock %}
