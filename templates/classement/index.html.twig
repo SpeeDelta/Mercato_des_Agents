@@ -97,7 +97,7 @@
                         name="q"
                         value="{{ search|default('') }}"
                         class="search-input"
-                        placeholder="Rechercher par pseudo ou subId"
+                        placeholder="Rechercher par pseudo, ville ou subId"
                     >
                     <button type="submit" class="btn-primary-ghost">🔎 Rechercher</button>
                     {% if search is not empty %}
@@ -113,6 +113,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Pseudo</th>
+                                <th>Ville</th>
                                 {% if isArbitre %}
                                     <th>SubId</th>
                                 {% endif %}
@@ -127,6 +128,7 @@
                                 <tr>
                                     <td><strong>{{ loop.index }}</strong></td>
                                     <td>{{ player.pseudo }}</td>
+                                    <td>{{ player.ville }}</td>
                                     {% if isArbitre %}
                                         <td>{{ player.subId }}</td>
                                     {% endif %}

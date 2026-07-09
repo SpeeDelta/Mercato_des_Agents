@@ -941,14 +941,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         html_to_text_converter?: scalar|Param|null, // A service implementing the "Symfony\Component\Mime\HtmlToTextConverter\HtmlToTextConverterInterface". // Default: null
  *     },
  * }
- * @psalm-type WebProfilerConfig = array{
- *     toolbar?: bool|array{ // Profiler toolbar configuration
- *         enabled?: bool|Param, // Default: false
- *         ajax_replace?: bool|Param, // Replace toolbar on AJAX requests // Default: false
- *     },
- *     intercept_redirects?: bool|Param, // Default: false
- *     excluded_ajax_paths?: scalar|Param|null, // Default: "^/((index|app(_[\\w]+)?)\\.php/)?_wdt"
- * }
  * @psalm-type StimulusConfig = array{
  *     controller_paths?: list<scalar|Param|null>,
  *     controllers_json?: scalar|Param|null, // Default: "%kernel.project_dir%/assets/controllers.json"
@@ -1462,11 +1454,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         },
  *     }>,
  * }
- * @psalm-type MakerConfig = array{
- *     root_namespace?: scalar|Param|null, // Default: "App"
- *     generate_final_classes?: bool|Param, // Default: true
- *     generate_final_entities?: bool|Param, // Default: false
- * }
  * @psalm-type TwigComponentConfig = array{
  *     defaults?: array<string, string|array{ // Default: []
  *         template_directory?: scalar|Param|null, // Default: "components"
@@ -1500,13 +1487,11 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         doctrine?: DoctrineConfig,
  *         doctrine_migrations?: DoctrineMigrationsConfig,
  *         twig?: TwigConfig,
- *         web_profiler?: WebProfilerConfig,
  *         stimulus?: StimulusConfig,
  *         turbo?: TurboConfig,
  *         twig_extra?: TwigExtraConfig,
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
- *         maker?: MakerConfig,
  *         twig_component?: TwigComponentConfig,
  *     },
  *     "when@prod"?: array{
@@ -1532,7 +1517,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         doctrine?: DoctrineConfig,
  *         doctrine_migrations?: DoctrineMigrationsConfig,
  *         twig?: TwigConfig,
- *         web_profiler?: WebProfilerConfig,
  *         stimulus?: StimulusConfig,
  *         turbo?: TurboConfig,
  *         twig_extra?: TwigExtraConfig,

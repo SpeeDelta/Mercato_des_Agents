@@ -7,6 +7,7 @@ source .env
 set +a
 
 API_BASE="https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/mercato/documents/users"
+DATA_FILE="Mercato_des_Agents.xlsx"
 
 urlencode() {
   python3 - "$1" <<'PY'
@@ -16,8 +17,51 @@ print(quote(sys.argv[1], safe=''))
 PY
 }
 
+find_city() {
+  local NAME="$1"
+
+  python3 - "$NAME" "$DATA_FILE" <<'PY'
+import sys
+import zipfile
+import xml.etree.ElementTree as ET
+
+name = sys.argv[1]
+path = sys.argv[2]
+ns = {'a': 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'}
+
+try:
+    with zipfile.ZipFile(path) as zf:
+        shared = []
+        shared_root = ET.fromstring(zf.read('xl/sharedStrings.xml'))
+        for si in shared_root.findall('a:si', ns):
+            shared.append(''.join(t.text or '' for t in si.findall('.//a:t', ns)))
+
+        sheet_root = ET.fromstring(zf.read('xl/worksheets/sheet1.xml'))
+        rows = sheet_root.findall('.//a:sheetData/a:row', ns)
+
+        for row in rows[1:]:
+            cells = {}
+            for cell in row.findall('a:c', ns):
+                ref = cell.attrib.get('r', '')
+                col = ''.join(ch for ch in ref if ch.isalpha())
+                raw = cell.find('a:v', ns)
+                value = raw.text if raw is not None else ''
+                if cell.attrib.get('t') == 's' and value.isdigit():
+                    idx = int(value)
+                    value = shared[idx] if idx < len(shared) else ''
+                cells[col] = value
+
+            if (cells.get('A') or '').strip() == name:
+                print((cells.get('B') or '').strip())
+                break
+except Exception:
+    pass
+PY
+}
+
 create_user() {
   local NAME="$1"
+  local CITY="${2:-}"
   local DOC_ID
   DOC_ID="$(urlencode "$NAME")"
 
@@ -27,6 +71,7 @@ create_user() {
       \"fields\": {
         \"subId\": { \"stringValue\": \"$NAME\" },
         \"pseudo\": { \"stringValue\": \"\" },
+        \"ville\": { \"stringValue\": \"$CITY\" },
         \"score\": { \"integerValue\": \"0\" },
         \"isActive\": { \"booleanValue\": true }
       }
@@ -114,7 +159,8 @@ USERS=(
 
 # Import
 for USER in "${USERS[@]}"; do
-  create_user "$USER"
+  CITY="$(find_city "$USER")"
+  create_user "$USER" "$CITY"
 done
 
 echo "🎉 Import terminé !"

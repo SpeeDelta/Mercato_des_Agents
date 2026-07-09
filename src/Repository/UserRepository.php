@@ -46,32 +46,33 @@ class UserRepository
     }
 
     /**
-     * Change le pseudo d'un user.
-     * If user does not exist, creates it with the given subId and pseudo.
-     * Only updates the pseudo field, preserving other fields (score, isActive, etc.)
+     * Change le pseudo et la ville d'un user.
+     * If user does not exist, creates it with the given subId, pseudo and ville.
+     * Only updates profile fields, preserving other fields (score, isActive, etc.)
      */
-    public function updatePseudo(string $subId, string $newPseudo): void
+    public function updatePseudo(string $subId, string $newPseudo, string $ville = ''): void
     {
         $docId = $this->findDocumentIdBySubId($subId);
 
         // If user does not exist, create it
         if ($docId === null) {
-            $this->createUser($subId, $newPseudo);
+            $this->createUser($subId, $newPseudo, $ville);
             return;
         }
 
         $fields = [
             'pseudo' => ['stringValue' => $newPseudo],
+            'ville' => ['stringValue' => $ville],
         ];
 
-        // Use merge mode: only update the 'pseudo' field, preserve other fields (score, isActive, etc.)
-        $this->firestore->set('users', $docId, $fields, ['pseudo']);
+        // Use merge mode: only update profile fields, preserve other fields (score, isActive, etc.)
+        $this->firestore->set('users', $docId, $fields, ['pseudo', 'ville']);
     }
 
     /**
-     * Creates a new user with the given subId and pseudo.
+     * Creates a new user with the given subId, pseudo and ville.
      */
-    public function createUser(string $subId, string $pseudo = ''): array
+    public function createUser(string $subId, string $pseudo = '', string $ville = ''): array
     {
         if (empty($subId)) {
             throw new \Exception('SubId cannot be empty');
@@ -80,6 +81,7 @@ class UserRepository
         $fields = [
             'subId' => ['stringValue' => $subId],
             'pseudo' => ['stringValue' => $pseudo],
+            'ville' => ['stringValue' => $ville],
             'score' => ['integerValue' => '0'],
             'isActive' => ['booleanValue' => true],
         ];
@@ -111,7 +113,7 @@ class UserRepository
 
     /**
      * Augmente le score d'un user de 1
-     * Only updates the score field, preserves other fields (pseudo, isActive, etc.)
+     * Only updates the score field, preserves other fields (pseudo, ville, isActive, etc.)
      */
     public function incrementScore(string $subId): void
     {

@@ -20,6 +20,9 @@ class User
     #[ORM\Column(type: 'integer')]
     private ?int $score = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $ville = null;
+
     #[ORM\Column(type: 'boolean')]
     private ?bool $isActive = null;
 
@@ -56,6 +59,18 @@ class User
     public function setScore(?int $score): static
     {
         $this->score = $score;
+
+        return $this;
+    }
+
+    public function getVille(): ?string
+    {
+        return $this->ville;
+    }
+
+    public function setVille(?string $ville): static
+    {
+        $this->ville = $ville;
 
         return $this;
     }

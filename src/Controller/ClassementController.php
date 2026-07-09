@@ -45,14 +45,16 @@ final class ClassementController extends AbstractController
             }
 
             $pseudo = trim((string) ($fields['pseudo']['stringValue'] ?? ''));
+            $ville = trim((string) ($fields['ville']['stringValue'] ?? ''));
             $score = (int) ($fields['score']['integerValue'] ?? 0);
 
             if ($search !== '') {
                 $needle = mb_strtolower($search);
                 $haystackSubId = mb_strtolower($subId);
                 $haystackPseudo = mb_strtolower($pseudo);
+                $haystackVille = mb_strtolower($ville);
 
-                if (!str_contains($haystackSubId, $needle) && !str_contains($haystackPseudo, $needle)) {
+                if (!str_contains($haystackSubId, $needle) && !str_contains($haystackPseudo, $needle) && !str_contains($haystackVille, $needle)) {
                     continue;
                 }
             }
@@ -60,6 +62,7 @@ final class ClassementController extends AbstractController
             $ranking[] = [
                 'subId' => $subId,
                 'pseudo' => $pseudo !== '' ? $pseudo : $subId,
+                'ville' => $ville !== '' ? $ville : 'Non renseignee',
                 'score' => $score,
             ];
         }

@@ -21,6 +21,7 @@ class HomeController extends AbstractController
 
             $subId = trim($request->request->get('subId'));
             $pseudo = trim($request->request->get('pseudo'));
+            $ville = trim($request->request->get('ville'));
 
             if ($subId === '') {
                 $error = "Le nom (SubId) est obligatoire.";
@@ -31,9 +32,10 @@ class HomeController extends AbstractController
                     $error = "Ce nom n'existe pas dans la base.";
                 } else {
                     // Mettre à jour le pseudo
-                    $userRepo->updatePseudo($subId, $pseudo);
+                    $userRepo->updatePseudo($subId, $pseudo, $ville);
                     $request->getSession()->set('connected_sub_id', $subId);
                     $request->getSession()->set('connected_pseudo', $pseudo);
+                    $request->getSession()->set('connected_ville', $ville);
                     $success = "Pseudo mis à jour avec succès !";
 
                     // Redirection vers la page mission
