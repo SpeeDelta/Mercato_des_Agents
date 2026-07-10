@@ -44,11 +44,15 @@ class MissionController extends AbstractController
         if ($request->isMethod('POST') && $request->request->getBoolean('generate_mission') && !$isArbitre) {
             $missionId = $missionRepo->generateMission($connectedSubId);
             $criteria = $missionRepo->getMissionCriteria($missionId);
-
-            $session->getFlashBag()->add('generated_mission', [
+            $missionPayload = [
                 'missionId' => $missionId,
                 'criteria' => $criteria,
-            ]);
+            ];
+
+            // Persist the last mission in the session so a refresh still shows it.
+            $session->set('last_generated_mission', $missionPayload);
+
+            $session->getFlashBag()->add('generated_mission', $missionPayload);
 
             return $this->redirectToRoute('mission');
         }
@@ -58,6 +62,13 @@ class MissionController extends AbstractController
         if ($generatedMission !== []) {
             $missionId = $generatedMission[0]['missionId'] ?? null;
             $criteria = $generatedMission[0]['criteria'] ?? [];
+        } else {
+            $savedMission = $session->get('last_generated_mission', []);
+
+            if (is_array($savedMission) && $savedMission !== []) {
+                $missionId = $savedMission['missionId'] ?? null;
+                $criteria = $savedMission['criteria'] ?? [];
+            }
         }
 
         return $this->render('mission/index.html.twig', [

@@ -151,28 +151,30 @@
 
             <p class="muted">Chaque nouvelle generation remplace la mission precedente.</p>
 
-            {% if missionId is defined and missionId %}
-                <div class="mb-3">
-                    <h5>Mission generee</h5>
-                </div>
+            <div id="missionContent">
+                {% if missionId is defined and missionId %}
+                    <div class="mb-3">
+                        <h5>Mission generee</h5>
+                    </div>
 
-                <div class="mb-3">
-                    <h5>Criteres</h5>
-                    {% if criteria is defined and criteria is not empty %}
-                        <ul class="criteria-list list-unstyled">
-                            {% for c in criteria %}
-                                {% set criterionDescription = criteriaDescriptions[c]|default(c) %}
-                                <li>• {{ criterionDescription }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p class="muted">Aucun critere trouve.</p>
-                    {% endif %}
-                </div>
+                    <div class="mb-3">
+                        <h5>Criteres</h5>
+                        {% if criteria is defined and criteria is not empty %}
+                            <ul class="criteria-list list-unstyled">
+                                {% for c in criteria %}
+                                    {% set criterionDescription = criteriaDescriptions[c]|default(c) %}
+                                    <li>• {{ criterionDescription }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="muted">Aucun critere trouve.</p>
+                        {% endif %}
+                    </div>
 
-            {% else %}
-                <p class="muted">Aucune mission generee pour l'instant.</p>
-            {% endif %}
+                {% else %}
+                    <p class="muted" id="missionEmptyState">Aucune mission generee pour l'instant.</p>
+                {% endif %}
+            </div>
 
             <div class="mt-4">
                 <details>
@@ -207,11 +209,99 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const storageKey = 'mercato:lastMission';
             const openBtn = document.getElementById('generateMissionBtn');
             const modal = document.getElementById('generateMissionModal');
             const cancelBtn = document.getElementById('cancelGenerateModalBtn');
             const confirmBtn = document.getElementById('confirmGenerateModalBtn');
             const form = document.getElementById('generateMissionForm');
+            const missionContent = document.getElementById('missionContent');
+
+            const serverMission = {{ {
+                missionId: (missionId is defined and missionId ? missionId : null),
+                connectedSubId: connectedSubId,
+                criteria: (criteria is defined ? criteria : []),
+                criteriaDescriptions: (criteriaDescriptions is defined ? criteriaDescriptions : {}),
+            }|json_encode|raw }};
+
+            function isValidMissionPayload(payload) {
+                return payload
+                    && typeof payload === 'object'
+                    && typeof payload.missionId === 'string'
+                    && payload.missionId !== ''
+                    && typeof payload.connectedSubId === 'string'
+                    && payload.connectedSubId !== ''
+                    && Array.isArray(payload.criteria);
+            }
+
+            function saveMissionToStorage(payload) {
+                if (!isValidMissionPayload(payload)) {
+                    return;
+                }
+
+                try {
+                    localStorage.setItem(storageKey, JSON.stringify(payload));
+                } catch (error) {
+                    // localStorage peut être indisponible ou plein, on ignore silencieusement
+                }
+            }
+
+            function loadMissionFromStorage() {
+                try {
+                    const raw = localStorage.getItem(storageKey);
+                    if (!raw) {
+                        return null;
+                    }
+
+                    const payload = JSON.parse(raw);
+                    return isValidMissionPayload(payload) ? payload : null;
+                } catch (error) {
+                    return null;
+                }
+            }
+
+            function renderMission(payload) {
+                if (!missionContent || !isValidMissionPayload(payload)) {
+                    return;
+                }
+
+                const criteriaDescriptions = payload.criteriaDescriptions || {};
+                const criteriaHtml = payload.criteria.length
+                    ? `<ul class="criteria-list list-unstyled">${payload.criteria.map((criterionId) => {
+                        const label = criteriaDescriptions[criterionId] || criterionId;
+                        return `<li>• ${escapeHtml(label)}</li>`;
+                    }).join('')}</ul>`
+                    : '<p class="muted">Aucun critere trouve.</p>';
+
+                missionContent.innerHTML = `
+                    <div class="mb-3">
+                        <h5>Mission generee</h5>
+                    </div>
+                    <div class="mb-3">
+                        <h5>Criteres</h5>
+                        ${criteriaHtml}
+                    </div>
+                `;
+            }
+
+            function escapeHtml(value) {
+                return String(value)
+                    .replaceAll('&', '&amp;')
+                    .replaceAll('<', '&lt;')
+                    .replaceAll('>', '&gt;')
+                    .replaceAll('"', '&quot;')
+                    .replaceAll("'", '&#39;');
+            }
+
+            if (isValidMissionPayload(serverMission) && serverMission.missionId) {
+                saveMissionToStorage(serverMission);
+            } else {
+                const cachedMission = loadMissionFromStorage();
+
+                if (cachedMission && cachedMission.connectedSubId === serverMission.connectedSubId) {
+                    renderMission(cachedMission);
+                }
+            }
 
             function openModal() {
                 if (!modal) {
@@ -243,6 +333,10 @@
                 confirmBtn.addEventListener('click', function () {
                     form.submit();
                 });
+            }
+
+            if (serverMission && serverMission.missionId) {
+                saveMissionToStorage(serverMission);
             }
 
             if (modal) {
