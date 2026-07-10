@@ -15,7 +15,7 @@
             border-radius: 24px;
             padding: 2rem;
             max-width: 760px;
-            margin: 3rem auto;
+            margin: 2rem auto;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
         }
 
@@ -38,7 +38,7 @@
             border-radius: 999px;
             font-weight: 700;
             padding: .35rem .75rem;
-            min-width: 60px;
+            min-width: 44px;
             text-align: center;
             display: inline-block;
         }
@@ -51,10 +51,12 @@
         }
 
         .search-input {
-            flex: 1 1 260px;
+            flex: 1 1 180px;
+            min-width: 0;
             border-radius: 12px;
             border: 1px solid rgba(0, 61, 153, 0.18);
             padding: .75rem 1rem;
+            font-size: 1rem;
         }
 
         .btn-primary-ghost {
@@ -64,6 +66,7 @@
             padding: 0.75rem 1rem;
             font-weight: 700;
             border: none;
+            white-space: nowrap;
         }
 
         .btn-secondary-soft {
@@ -75,10 +78,35 @@
             text-decoration: none;
             display: inline-flex;
             align-items: center;
+            white-space: nowrap;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 576px) {
+            .classement-card {
+                margin: 0.75rem 0.5rem;
+                padding: 1.25rem 1rem;
+                border-radius: 18px;
+            }
+
+            .card-title { font-size: 1.5rem; }
+
+            .table { font-size: 0.82rem; }
+
+            .score-badge {
+                padding: .25rem .5rem;
+                min-width: 36px;
+            }
+
+            .search-input { font-size: 0.95rem; }
         }
     </style>
 
-    <div class="container">
+    <div class="container-fluid" style="padding: 0 0.5rem;">
         <div class="classement-card">
             <h2 class="card-title">Classement</h2>
             <p class="muted">Top joueurs selon le score actuel.</p>

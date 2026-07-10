@@ -8,7 +8,8 @@
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         .home-card {
@@ -36,6 +37,7 @@
             padding: 0.8rem 1.2rem;
             font-weight: 700;
             border: none;
+            width: 100%;
         }
 
         .btn-primary-ghost:disabled {
@@ -43,13 +45,13 @@
             cursor: not-allowed;
         }
 
-        .criteria-list li { margin-bottom: .6rem; }
+        .criteria-list li { margin-bottom: .6rem; font-size: 1rem; }
         .muted { color: #6b7280; }
 
         .top-right-nav {
             position: fixed;
-            top: 1rem;
-            right: 1rem;
+            top: 0.75rem;
+            right: 0.75rem;
             z-index: 1000;
         }
 
@@ -58,15 +60,47 @@
             color: #fff;
             border: 1px solid rgba(255, 255, 255, 0.35);
             border-radius: 12px;
-            padding: .55rem .9rem;
+            padding: .5rem .85rem;
             font-weight: 700;
+            font-size: 0.85rem;
             text-decoration: none;
             backdrop-filter: blur(6px);
+            white-space: nowrap;
         }
 
         .btn-top-nav:hover {
             color: #fff;
             background: rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: .75rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-soft {
+            border-radius: 12px;
+            padding: .7rem 1rem;
+            font-weight: 700;
+            border: none;
+            flex: 1 1 auto;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        @media (max-width: 576px) {
+            .home-card {
+                margin: 1rem 0.75rem;
+                padding: 1.5rem 1.25rem;
+                border-radius: 18px;
+            }
+
+            .card-title { font-size: 1.5rem; }
+
+            .container { padding-left: 0; padding-right: 0; }
         }
 
         .modal-backdrop-custom {
@@ -96,19 +130,6 @@
             margin-bottom: 1rem;
         }
 
-        .modal-actions {
-            display: flex;
-            gap: .75rem;
-            justify-content: flex-end;
-            margin-top: 1rem;
-        }
-
-        .btn-soft {
-            border-radius: 12px;
-            padding: .7rem 1rem;
-            font-weight: 700;
-            border: none;
-        }
 
         .btn-cancel {
             background: #e2e8f0;

@@ -8,7 +8,8 @@
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         /* Éléments de fond décoratifs */
@@ -257,31 +258,32 @@
         /* Responsive */
         @media (max-width: 576px) {
             .card {
-                margin: 1rem;
+                margin: 0.5rem;
+                border-radius: 16px;
             }
 
             .card-title {
-                font-size: 1.8rem;
+                font-size: 1.6rem;
             }
 
             body::before {
-                width: 300px;
-                height: 300px;
+                width: 200px;
+                height: 200px;
                 right: -20%;
             }
 
             body::after {
-                width: 250px;
-                height: 250px;
+                width: 180px;
+                height: 180px;
                 left: -20%;
             }
         }
     </style>
 
-    <div class="home-page container-fluid d-flex justify-content-center align-items-center" style="min-height: 100vh; padding: 2rem 1rem;">
+    <div class="home-page container-fluid d-flex justify-content-center align-items-center" style="min-height: 100vh; padding: 1.25rem 0.75rem;">
 
         <div class="card-wrapper">
-            <div class="card shadow p-5">
+            <div class="card shadow p-4 p-sm-5">
 
                 <h1 class="card-title">
                     Mercato des Agents ⚽
@@ -295,6 +297,15 @@
                     </div>
                 {% endif %}
 
+                <datalist id="subIdList">
+                    {% for user in users|default([]) %}
+                        {% set uid = user.fields.subId.stringValue ?? '' %}
+                        {% if uid != '' and not (uid starts with 'Arbitre') %}
+                            <option value="{{ uid }}">
+                        {% endif %}
+                    {% endfor %}
+                </datalist>
+
                 <form method="post" data-turbo="false" novalidate>
 
                     <div class="form-group">
@@ -302,6 +313,8 @@
                             👤 Nom (SubId)
                         </label>
                         <input type="text" name="subId" id="subId" class="form-control"
+                               list="subIdList"
+                               autocomplete="off"
                                placeholder="Ex : Idris"
                                required>
                     </div>
