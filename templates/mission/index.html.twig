@@ -3,142 +3,269 @@
 {% block body %}
 
     <style>
+        :root {
+            --navy: #0A1A2F;
+            --blue: #1F6FEB;
+            --gold: #F2C94C;
+            --white: #FFFFFF;
+            --red: #D7263D;
+            --neon: #E8FF3A;
+            --motion: 0.15s;
+        }
+
         body {
-            background: linear-gradient(135deg, #003d99 0%, #0066ff 50%, #004db8 100%);
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            position: relative;
+            margin: 0;
+            font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--white);
             overflow-x: hidden;
             overflow-y: auto;
+            background:
+                radial-gradient(circle at 15% 10%, rgba(31,111,235,0.32), transparent 40%),
+                radial-gradient(circle at 82% 84%, rgba(242,201,76,0.2), transparent 45%),
+                linear-gradient(155deg, #061222 0%, var(--navy) 54%, #12345f 100%);
         }
-
-        .home-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.98) 100%);
-            border-radius: 24px;
-            padding: 2.5rem;
-            max-width: 720px;
-            margin: 3rem auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-        }
-
-        .card-title {
-            background: linear-gradient(135deg, #003d99 0%, #0066ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 700;
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .btn-primary-ghost {
-            background: linear-gradient(135deg, #003d99 0%, #0066ff 100%);
-            color: white;
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            font-weight: 700;
-            border: none;
-            width: 100%;
-        }
-
-        .btn-primary-ghost:disabled {
-            opacity: .55;
-            cursor: not-allowed;
-        }
-
-        .criteria-list li { margin-bottom: .6rem; font-size: 1rem; }
-        .muted { color: #6b7280; }
 
         .top-right-nav {
             position: fixed;
-            top: 0.75rem;
-            right: 0.75rem;
+            top: 0.65rem;
+            right: 0.65rem;
             z-index: 1000;
         }
 
         .btn-top-nav {
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            border-radius: 12px;
-            padding: .5rem .85rem;
-            font-weight: 700;
-            font-size: 0.85rem;
+            color: #0a1a2f;
+            border-radius: 999px;
+            padding: 0.5rem 0.85rem;
+            font-weight: 900;
+            font-size: 0.78rem;
             text-decoration: none;
-            backdrop-filter: blur(6px);
             white-space: nowrap;
+            border: 1px solid rgba(255,255,255,0.45);
+            background:
+                radial-gradient(circle at 25% 20%, rgba(255,255,255,0.55), transparent 38%),
+                linear-gradient(130deg, #2f7bf0 0%, #63a1ff 55%, var(--gold) 100%);
+            box-shadow: 0 0.35rem 0.9rem rgba(2,8,20,0.35);
+            transition: transform var(--motion), filter var(--motion);
         }
 
         .btn-top-nav:hover {
+            color: #0a1a2f;
+            transform: translateY(-1px);
+            filter: saturate(1.08);
+        }
+
+        .container.mission-page {
+            padding: 0.75rem;
+        }
+
+        .home-card {
+            max-width: 46rem;
+            margin: 2.35rem auto 0.75rem;
+            padding: 1.2rem 1rem;
+            border-radius: 1.1rem;
             color: #fff;
-            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(242,201,76,0.6);
+            background:
+                repeating-linear-gradient(145deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 8px, transparent 8px, transparent 16px),
+                linear-gradient(155deg, rgba(10,26,47,0.95) 0%, rgba(17,43,76,0.96) 56%, rgba(31,111,235,0.34) 100%);
+            box-shadow:
+                0 0 0 2px rgba(242,201,76,0.24) inset,
+                0 1rem 2.4rem rgba(2,10,26,0.5);
+            position: relative;
+            overflow: hidden;
+            animation: slideIn var(--motion) ease-out;
         }
 
-        .modal-actions {
+        .home-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent 35%, rgba(255,255,255,0.18) 50%, transparent 66%);
+            transform: translateX(-140%);
+            animation: shine 4.6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .card-title {
+            font-family: 'Bebas Neue', 'Montserrat', sans-serif;
+            letter-spacing: 0.05em;
+            font-size: clamp(1.9rem, 8vw, 2.6rem);
+            margin-bottom: 0.6rem;
+            color: var(--white);
+            text-shadow: 0 0.4rem 1rem rgba(0,0,0,0.45);
             display: flex;
-            gap: .75rem;
-            justify-content: flex-end;
-            margin-top: 1rem;
-            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.45rem;
         }
 
-        .btn-soft {
-            border-radius: 12px;
-            padding: .7rem 1rem;
+        .card-title::before {
+            content: '🏟️';
+            font-size: 1rem;
+            filter: drop-shadow(0 0 0.32rem rgba(242,201,76,0.8));
+        }
+
+        .muted {
+            color: rgba(232,240,255,0.78);
+            font-size: 0.92rem;
+            font-weight: 600;
+        }
+
+        .criteria-list {
+            background: rgba(9,24,43,0.45);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 0.9rem;
+            padding: 0.85rem;
+        }
+
+        .criteria-list li {
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: #f4f7ff;
             font-weight: 700;
-            border: none;
-            flex: 1 1 auto;
-            min-width: 100px;
-            text-align: center;
         }
 
-        @media (max-width: 576px) {
-            .home-card {
-                margin: 1rem 0.75rem;
-                padding: 1.5rem 1.25rem;
-                border-radius: 18px;
-            }
+        .criteria-list li:last-child { margin-bottom: 0; }
 
-            .card-title { font-size: 1.5rem; }
+        .btn-primary-ghost {
+            border: 0;
+            width: 100%;
+            border-radius: 999px;
+            padding: 0.82rem 1rem;
+            color: #081e3a;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background:
+                radial-gradient(circle at 25% 20%, rgba(255,255,255,0.62), transparent 38%),
+                linear-gradient(130deg, var(--blue) 0%, #5d95f2 50%, var(--gold) 100%);
+            box-shadow: 0 0.4rem 1rem rgba(2,8,20,0.4);
+            transition: transform var(--motion), box-shadow var(--motion), filter var(--motion);
+        }
 
-            .container { padding-left: 0; padding-right: 0; }
+        .btn-primary-ghost:hover,
+        .btn-primary-ghost:focus-visible {
+            transform: translateY(-1px);
+            filter: saturate(1.1);
+            box-shadow: 0 0.6rem 1.25rem rgba(2,8,20,0.44);
+        }
+
+        .btn-primary-ghost:disabled {
+            opacity: 0.58;
+            cursor: not-allowed;
+        }
+
+        details > summary {
+            color: var(--gold) !important;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+        }
+
+        .rules-content {
+            background: rgba(255,255,255,0.08) !important;
+            border-radius: 0.95rem;
+            color: #ffffff !important;
+        }
+
+        .rules-content p,
+        .rules-content ol,
+        .rules-content li {
+            color: #ffffff !important;
         }
 
         .modal-backdrop-custom {
             position: fixed;
             inset: 0;
-            background: rgba(15, 23, 42, 0.72);
+            background: rgba(4, 12, 24, 0.78);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 1050;
-            padding: 1rem;
+            padding: 0.75rem;
         }
 
         .modal-card {
             width: 100%;
-            max-width: 520px;
-            background: #ffffff;
-            border-radius: 24px;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
-            padding: 1.5rem;
+            max-width: 32rem;
+            background: linear-gradient(145deg, #f5f8ff 0%, #ffffff 100%);
+            border-radius: 1rem;
+            border: 1px solid rgba(10,26,47,0.12);
+            box-shadow: 0 1rem 2.5rem rgba(2,8,20,0.55);
+            padding: 1.15rem;
+            color: #111827;
         }
 
         .modal-title {
-            font-size: 1.35rem;
-            font-weight: 800;
-            color: #0f172a;
-            margin-bottom: 1rem;
+            font-size: 1.15rem;
+            font-weight: 900;
+            color: #0f1f37;
+            margin-bottom: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
         }
 
+        .modal-card .muted {
+            color: #111827;
+        }
+
+        .modal-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+            justify-content: flex-end;
+            margin-top: 0.85rem;
+        }
+
+        .btn-soft {
+            border-radius: 999px;
+            padding: 0.66rem 0.92rem;
+            font-weight: 800;
+            border: none;
+            flex: 1 1 46%;
+            min-width: 8rem;
+            text-align: center;
+        }
 
         .btn-cancel {
-            background: #e2e8f0;
+            background: #dbe3f3;
             color: #0f172a;
         }
 
         .btn-confirm {
-            background: linear-gradient(135deg, #003d99 0%, #0066ff 100%);
-            color: white;
+            background: linear-gradient(130deg, #1f6feb 0%, #58a5ff 52%, #f2c94c 100%);
+            color: #0a1a2f;
+        }
+
+        .mission-page.referee-mode .home-card {
+            border-color: rgba(232,255,58,0.62);
+            box-shadow: 0 0 0 2px rgba(232,255,58,0.22) inset, 0 1rem 2.4rem rgba(0,0,0,0.56);
+            background:
+                repeating-linear-gradient(145deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 8px, transparent 8px, transparent 16px),
+                linear-gradient(145deg, #05070a 0%, #0f141f 58%, #2a3242 100%);
+        }
+
+        .mission-page.referee-mode .card-title,
+        .mission-page.referee-mode details > summary {
+            color: var(--neon) !important;
+            text-shadow: 0 0 0.6rem rgba(232,255,58,0.4);
+        }
+
+        @keyframes shine {
+            0%, 60%, 100% { transform: translateX(-140%); }
+            78% { transform: translateX(140%); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (min-width: 576px) {
+            .top-right-nav { top: 0.95rem; right: 0.95rem; }
+            .btn-top-nav { font-size: 0.84rem; }
+            .container.mission-page { padding: 1.25rem; }
+            .home-card { margin-top: 3rem; padding: 1.6rem; border-radius: 1.3rem; }
+            .btn-soft { flex: 0 0 auto; min-width: 8.4rem; }
         }
     </style>
 
@@ -148,7 +275,7 @@
         <a href="{{ path('app_classement') }}" class="btn-top-nav">🏆 Classement</a>
     </div>
 
-    <div class="container">
+    <div class="container mission-page{% if isArbitre %} referee-mode{% endif %}">
         <div class="home-card">
             <h2 class="card-title">Generation de mission</h2>
 
@@ -200,7 +327,7 @@
             <div class="mt-4">
                 <details>
                     <summary style="cursor:pointer; font-weight:700; color:#003d99;">🏆 Règles du Mercato</summary>
-                    <div class="mt-3 p-3" style="background: rgba(0,61,153,0.06); border-radius: 16px; color:#0f172a;">
+                    <div class="mt-3 p-3 rules-content">
                         <p class="mb-2 fw-bold">🏆 BIENVENUE AU MERCATO ! 🏆</p>
                         <ol class="mb-0 ps-3">
                             <li>📱 CLIQUE pour générer ta mission (3 critères de style).</li>

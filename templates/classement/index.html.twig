@@ -4,150 +4,264 @@
 
 {% block body %}
     <style>
+        :root {
+            --navy: #0A1A2F;
+            --blue: #1F6FEB;
+            --gold: #F2C94C;
+            --white: #FFFFFF;
+            --red: #D7263D;
+            --silver: #B5C0CF;
+            --bronze: #CD7F32;
+            --motion: 0.15s;
+        }
+
         body {
-            background: linear-gradient(135deg, #003d99 0%, #0066ff 50%, #004db8 100%);
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--white);
+            background:
+                radial-gradient(circle at 18% 12%, rgba(31,111,235,0.31), transparent 44%),
+                radial-gradient(circle at 84% 88%, rgba(242,201,76,0.22), transparent 44%),
+                linear-gradient(155deg, #061222 0%, var(--navy) 54%, #133865 100%);
         }
 
         .classement-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.98) 100%);
-            border-radius: 24px;
-            padding: 2rem;
-            max-width: 760px;
-            margin: 2rem auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            max-width: 50rem;
+            margin: 0.85rem auto;
+            padding: 1rem 0.85rem;
+            border-radius: 1.15rem;
+            border: 1px solid rgba(242,201,76,0.55);
+            background:
+                repeating-linear-gradient(145deg, rgba(255,255,255,0.035) 0, rgba(255,255,255,0.035) 8px, transparent 8px, transparent 16px),
+                linear-gradient(150deg, rgba(10,26,47,0.95) 0%, rgba(16,39,71,0.95) 58%, rgba(31,111,235,0.28) 100%);
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,0.05) inset,
+                0 1rem 2.3rem rgba(2,8,22,0.5);
+            position: relative;
+            overflow: hidden;
+            animation: rise var(--motion) ease-out;
+        }
+
+        .classement-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent 32%, rgba(255,255,255,0.17) 50%, transparent 66%);
+            transform: translateX(-140%);
+            animation: shine 5s ease-in-out infinite;
+            pointer-events: none;
         }
 
         .card-title {
-            background: linear-gradient(135deg, #003d99 0%, #0066ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 700;
-            font-size: 2rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.45rem;
+            color: var(--white);
+            font-family: 'Bebas Neue', 'Montserrat', sans-serif;
+            font-size: clamp(1.9rem, 7.8vw, 2.6rem);
+            letter-spacing: 0.05em;
+            text-shadow: 0 0.35rem 1rem rgba(0,0,0,0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .card-title::before {
+            content: '🏆';
+            font-size: 1rem;
+            filter: drop-shadow(0 0 0.32rem rgba(242,201,76,0.8));
         }
 
         .muted {
-            color: #6b7280;
-        }
-
-        .score-badge {
-            background: linear-gradient(135deg, #003d99 0%, #0066ff 100%);
-            color: #fff;
-            border-radius: 999px;
-            font-weight: 700;
-            padding: .35rem .75rem;
-            min-width: 44px;
-            text-align: center;
-            display: inline-block;
+            color: rgba(226,236,253,0.8);
+            font-size: 0.9rem;
+            font-weight: 600;
         }
 
         .search-form {
             display: flex;
-            gap: .75rem;
-            flex-wrap: wrap;
-            margin-top: 1.25rem;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
         }
 
         .search-input {
-            flex: 1 1 180px;
+            width: 100%;
             min-width: 0;
-            border-radius: 12px;
-            border: 1px solid rgba(0, 61, 153, 0.18);
-            padding: .75rem 1rem;
-            font-size: 1rem;
-        }
-
-        .btn-primary-ghost {
-            background: linear-gradient(135deg, #003d99 0%, #0066ff 100%);
-            color: white;
-            border-radius: 12px;
-            padding: 0.75rem 1rem;
+            border-radius: 0.85rem;
+            border: 1px solid rgba(242,201,76,0.42);
+            padding: 0.72rem 0.88rem;
+            font-size: 0.95rem;
             font-weight: 700;
-            border: none;
-            white-space: nowrap;
+            color: #122846;
+            background: rgba(255,255,255,0.94);
         }
 
+        .search-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 0.2rem rgba(242,201,76,0.25);
+        }
+
+        .btn-primary-ghost,
         .btn-secondary-soft {
-            background: #e2e8f0;
-            color: #0f172a;
-            border-radius: 12px;
-            padding: 0.75rem 1rem;
-            font-weight: 700;
+            width: 100%;
+            justify-content: center;
+            border-radius: 999px;
+            padding: 0.7rem 1rem;
+            font-weight: 900;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+            border: none;
+            transition: transform var(--motion), filter var(--motion);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            white-space: nowrap;
         }
 
-        .table th, .table td {
+        .btn-primary-ghost {
+            color: #08213d;
+            background:
+                radial-gradient(circle at 25% 20%, rgba(255,255,255,0.62), transparent 38%),
+                linear-gradient(132deg, var(--blue) 0%, #68a4ff 52%, var(--gold) 100%);
+            box-shadow: 0 0.4rem 1rem rgba(3,10,25,0.42);
+        }
+
+        .btn-secondary-soft {
+            color: #dce9ff;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(10,26,47,0.45);
+        }
+
+        .btn-primary-ghost:hover,
+        .btn-secondary-soft:hover {
+            transform: translateY(-1px);
+            filter: saturate(1.08);
+        }
+
+        .table-responsive {
+            border-radius: 0.95rem;
+            border: 1px solid rgba(255,255,255,0.15);
+            overflow: hidden;
+            background: rgba(8,19,36,0.5);
+        }
+
+        .table {
+            margin-bottom: 0;
+            color: #f5f9ff;
+            width: 100%;
+            font-size: 0.82rem;
+            table-layout: fixed;
+        }
+
+        .table th,
+        .table td {
             vertical-align: middle;
-            white-space: nowrap;
-        }
-
-        .table td:nth-child(2),
-        .table td:nth-child(3) {
             white-space: normal;
             word-break: break-word;
+            border-color: rgba(255,255,255,0.09);
+            padding: 0.45rem 0.35rem;
         }
 
-        @media (max-width: 576px) {
-            .classement-card {
-                margin: 0.75rem 0.5rem;
-                padding: 1.25rem 1rem;
-                border-radius: 18px;
-            }
+        .table thead {
+            background: linear-gradient(90deg, rgba(19,46,83,0.95), rgba(31,111,235,0.72));
+        }
 
-            .card-title { font-size: 1.5rem; }
+        .table thead th {
+            border-bottom: 0;
+            font-size: 0.73rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .table tbody tr {
+            transition: background var(--motion), transform var(--motion);
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .table tbody tr:nth-child(1) td:first-child strong::before,
+        .table tbody tr:nth-child(2) td:first-child strong::before,
+        .table tbody tr:nth-child(3) td:first-child strong::before {
+            margin-right: 0.2rem;
+        }
+
+        .table tbody tr:nth-child(1) td:first-child strong::before { content: '👑'; color: var(--gold); }
+        .table tbody tr:nth-child(2) td:first-child strong::before { content: '👑'; color: var(--silver); }
+        .table tbody tr:nth-child(3) td:first-child strong::before { content: '👑'; color: var(--bronze); }
+
+        .table tbody tr:nth-child(1) { background: linear-gradient(90deg, rgba(242,201,76,0.16), rgba(242,201,76,0.04)); }
+        .table tbody tr:nth-child(2) { background: linear-gradient(90deg, rgba(181,192,207,0.14), rgba(181,192,207,0.03)); }
+        .table tbody tr:nth-child(3) { background: linear-gradient(90deg, rgba(205,127,50,0.16), rgba(205,127,50,0.03)); }
+
+        .score-badge {
+            background: linear-gradient(180deg, #131a28 0%, #090f1c 100%);
+            color: #7cff93;
+            border-radius: 0.55rem;
+            border: 1px solid rgba(124,255,147,0.38);
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            padding: 0.24rem 0.46rem;
+            min-width: 2.25rem;
+            text-align: center;
+            display: inline-block;
+            text-shadow: 0 0 0.4rem rgba(124,255,147,0.65);
+            position: relative;
+        }
+
+        .score-badge::after {
+            content: '';
+            position: absolute;
+            inset: 0.08rem;
+            border-radius: 0.45rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            pointer-events: none;
+        }
+
+        @keyframes shine {
+            0%, 62%, 100% { transform: translateX(-140%); }
+            76% { transform: translateX(140%); }
+        }
+
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (min-width: 576px) {
+            .classement-card {
+                margin: 1.2rem auto;
+                padding: 1.5rem;
+                border-radius: 1.45rem;
+            }
 
             .search-form {
-                flex-direction: column;
-                gap: 0.5rem;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 0.65rem;
+                align-items: center;
             }
 
-            .search-input,
+            .search-input { flex: 1 1 17rem; }
+
             .btn-primary-ghost,
             .btn-secondary-soft {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .table-responsive {
-                margin-left: -0.25rem;
-                margin-right: -0.25rem;
+                width: auto;
             }
 
             .table {
-                font-size: 0.82rem;
-                table-layout: fixed;
-                width: 100%;
+                font-size: 0.92rem;
+                table-layout: auto;
             }
 
             .table th,
             .table td {
-                white-space: normal;
-                padding: 0.45rem 0.35rem;
-                word-break: break-word;
+                white-space: nowrap;
+                padding: 0.6rem 0.55rem;
             }
-
-            .table th:nth-child(1),
-            .table td:nth-child(1) {
-                width: 2rem;
-                text-align: center;
-            }
-
-            .table th:nth-last-child(1),
-            .table td:nth-last-child(1) {
-                width: 3.75rem;
-            }
-
-            .score-badge {
-                padding: .25rem .5rem;
-                min-width: 36px;
-            }
-
-            .search-input { font-size: 0.95rem; }
         }
     </style>
 
