@@ -86,6 +86,12 @@
             white-space: nowrap;
         }
 
+        .table td:nth-child(2),
+        .table td:nth-child(3) {
+            white-space: normal;
+            word-break: break-word;
+        }
+
         @media (max-width: 576px) {
             .classement-card {
                 margin: 0.75rem 0.5rem;
@@ -95,7 +101,46 @@
 
             .card-title { font-size: 1.5rem; }
 
-            .table { font-size: 0.82rem; }
+            .search-form {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .search-input,
+            .btn-primary-ghost,
+            .btn-secondary-soft {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .table-responsive {
+                margin-left: -0.25rem;
+                margin-right: -0.25rem;
+            }
+
+            .table {
+                font-size: 0.82rem;
+                table-layout: fixed;
+                width: 100%;
+            }
+
+            .table th,
+            .table td {
+                white-space: normal;
+                padding: 0.45rem 0.35rem;
+                word-break: break-word;
+            }
+
+            .table th:nth-child(1),
+            .table td:nth-child(1) {
+                width: 2rem;
+                text-align: center;
+            }
+
+            .table th:nth-last-child(1),
+            .table td:nth-last-child(1) {
+                width: 3.75rem;
+            }
 
             .score-badge {
                 padding: .25rem .5rem;
